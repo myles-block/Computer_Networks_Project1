@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Process
 import socket  # Allows you to work with network sockets & sending/receiving data
 import struct  # Used to encode and decode structured data
 import ipaddress
@@ -11,7 +13,7 @@ PORT = 33434  # Transmits packets to a remote host and uses the responses to map
 # Protocols
 ICMP = socket.getprotobyname('icmp')  # Retrieves the protocol number associated with Internet Control Message Protocol (ICMP) protocol
 UDP = socket.getprotobyname('udp')  # Retrieves the protocol number associated with User Datagram Protocol(UDP)
-
+IPLIST = []
 
 
 def traceroute(ipaddress): #start, end, maximum_hops,
@@ -88,16 +90,23 @@ def traceroute(ipaddress): #start, end, maximum_hops,
         ttl += 1
 
     # Completion message
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{current_time} Traceroute completed.")
+    # current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # print(f"{current_time} Traceroute completed.")
 
+def traceroute_with_threads(lists_of_ip):
+    with ThreadPoolExecutor() as executor:
+        executor.map(traceroute, lists_of_ip)
 
 def router_iterator(start, end):
     start_ip = ipaddress.IPv4Address(start)
     end_ip = ipaddress.IPv4Address(end)
     
     while start_ip <= end_ip:
-        traceroute(start_ip)
+        IPLIST.append(start_ip)
         start_ip += 8
+    traceroute_with_threads(IPLIST)
 
-router_iterator("10.0.0.1", "10.0.0.255")
+
+
+router_iterator("10.0.0.1", "10.0.0.254")
+router_iterator("10.0.0.255", "10.0.8.255")
