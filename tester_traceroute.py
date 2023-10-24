@@ -5,6 +5,7 @@ import struct  # Used to encode and decode structured data
 import ipaddress
 import time  # Used to keep track of data and when operations occur
 from datetime import datetime  # Gets current time and date
+from pymongo_get_database import get_database #grabs the MongoDB database
 
 # Constants
 TIMEOUT = 4  # How long program waits to receive a response from a node or hop
@@ -14,6 +15,7 @@ PORT = 33434  # Transmits packets to a remote host and uses the responses to map
 ICMP = socket.getprotobyname('icmp')  # Retrieves the protocol number associated with Internet Control Message Protocol (ICMP) protocol
 UDP = socket.getprotobyname('udp')  # Retrieves the protocol number associated with User Datagram Protocol(UDP)
 IPLIST = []
+TEMPLATIZEDJSON = []
 
 
 def traceroute(ipaddress): #start, end, maximum_hops,
@@ -35,8 +37,9 @@ def traceroute(ipaddress): #start, end, maximum_hops,
     # socket.SO_RCVTIMEO: Socket option that defines how long the socket waits to receive data before timed out
     icmp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, struct.pack('ll', TIMEOUT, 0))
 
-    # Hostname input
+    # Hostname & connected_list
     host = str(ipaddress)#input("Please enter the hostname to traceroute: ")
+    connected_list = []
 
     try:
         dest_addr = socket.gethostbyname(host)
@@ -81,13 +84,19 @@ def traceroute(ipaddress): #start, end, maximum_hops,
                 pass
             t = round((end_time - start_time) * 1000, 4)
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            place_put = f"{addr[0]}"
             print(f"{ttl}: {addr[0]}")
         else:
+            place_put = "*"
             print(f"{ttl} *  *  *")
+        connected_list.append(place_put)
 
         if done:
             break
         ttl += 1
+    object = createJSON(host, connected_list)
+    TEMPLATIZEDJSON.append(object)
+
 
     # Completion message
     # current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -106,7 +115,25 @@ def router_iterator(start, end):
         start_ip += 8
     traceroute_with_threads(IPLIST)
 
+def createJSON(ipaddress, attachment_list):
+    ip_address = {
+    "whodidit" : "Myles", #TODO: change this based on who is using the file 
+    "location" : "iLab",  # TODO: changed this based on location
+    "ip_address_host" : ipaddress,
+    "ip_address_attach" : attachment_list,
+    }
+    return ip_address
 
 
-router_iterator("10.0.0.1", "10.0.0.254")
-router_iterator("10.0.0.255", "10.0.8.255")
+def pushToMongoDB():
+    pass
+
+
+
+router_iterator("10.0.0.1", "10.0.0.81") # TODO: change this based on ranges
+# router_iterator("10.0.0.255", "10.0.8.255")
+print(TEMPLATIZEDJSON)
+dbname = get_database()
+collection_name = dbname["myles_data"]
+collection_name.insert_many(TEMPLATIZEDJSON)
+
