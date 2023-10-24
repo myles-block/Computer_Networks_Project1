@@ -34,7 +34,7 @@ def traceroute(ipaddress): #start, end, maximum_hops,
     icmp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, struct.pack('ll', TIMEOUT, 0))
 
     # Hostname input
-    host = "10.0.0.1"#input("Please enter the hostname to traceroute: ")
+    host = str(ipaddress)#input("Please enter the hostname to traceroute: ")
 
     try:
         dest_addr = socket.gethostbyname(host)
