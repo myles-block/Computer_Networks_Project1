@@ -1,1 +1,4 @@
 
+To utilize the code, you must first connect to the Github repository containing the code via your computer’s terminal. The command to do so is git clone https://github.com/myles-block/Computer_Networks_Project1.git. Once the Github s successfully cloned, the user will be able to run the code via sudo python3 computer_networks_project1.git/tester_traceroute.py. After inputting the range of IP addresses, the user will be able to get the IP address of various routers across Howard University's Network. 
+
+An alternative means is to clone the github in an code editor similar to Visual  Code Studio and running it via the command “sudo python3 traceroute.py”. 
