@@ -154,6 +154,6 @@ def addHopData(ttl, ip):
 #router_iterator("10.57.153.152", "10.64.0.1") # terminal 10
 # writeToJSON()
 print(TEMPLATIZEDJSON)
-pushToMongoDB() # this pushes to mongoDB
+# pushToMongoDB() # this pushes to mongoDB
 
 

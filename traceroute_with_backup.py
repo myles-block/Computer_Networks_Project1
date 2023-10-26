@@ -19,8 +19,8 @@ ICMP = socket.getprotobyname('icmp')  # Retrieves the protocol number associated
 UDP = socket.getprotobyname('udp')  # Retrieves the protocol number associated with User Datagram Protocol(UDP)
 IPLIST = []
 TEMPLATIZEDJSON = []
-BACKUP = "last_seen.txt"
-OUTPUTFILE = "traceroute_data.json"
+BACKUP = "last_seen.txt"#TODO: Make a file of this for thie function to run
+OUTPUTFILE = "traceroute_data.json" #TODO: Make a file of this for it to run
 
 
 
