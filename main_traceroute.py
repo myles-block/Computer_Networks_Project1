@@ -57,7 +57,7 @@ def traceroute(ipaddress): #start, end, maximum_hops,
     # Tracerouting Process
     print(f"Tracerouting... {host} ({dest_addr})")
     while True:
-        if ttl == 3: #TODO: This is our max hops we are letting it go
+        if ttl == 7: #TODO: This is our max hops we are letting it go
             break
         udp_sock.setsockopt(socket.SOL_IP, socket.IP_TTL, ttl)
         udp_sock.sendto(b'', (dest_addr, PORT))
@@ -100,10 +100,6 @@ def traceroute(ipaddress): #start, end, maximum_hops,
         ttl += 1
     object = createJSON(host, connected_list)
     TEMPLATIZEDJSON.append(object)
-
-
-    # Completion message
-    # current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"{host} ({dest_addr} Traceroute completed.")
 
 def traceroute_with_threads(lists_of_ip):
@@ -122,7 +118,7 @@ def router_iterator(start, end):
 def createJSON(ipaddress, attachment_list):
     ip_address = {
     # "whodidit" : "Myles", #TODO: change this based on who is using the file 
-    "location" : "iLab",  # TODO: changed this based on location
+    "location" : "LKD",  # TODO: changed this based on location
     "ip_address_host" : ipaddress,
     "ip_address_attach" : attachment_list,
     }
@@ -131,11 +127,11 @@ def createJSON(ipaddress, attachment_list):
 
 def pushToMongoDB():
     dbname = get_database()
-    collection_name = dbname["myles_data"]
+    collection_name = dbname["myles_ipRange1"]
     collection_name.insert_many(TEMPLATIZEDJSON)
 
 def writeToJSON(object):
-    with open("IPCollect.json", "a") as line:
+    with open("Myles_IPCollect.json", "a") as line:
         json.dump(object, line, indent=4)
 
 def addHopData(ttl, ip):
@@ -146,9 +142,18 @@ def addHopData(ttl, ip):
     return hop_data
 
 
-router_iterator("10.0.0.1", "10.0.0.81") # TODO: change this to your IP range split
+# router_iterator("10.0.0.1", "10.6.102.103") # TODO: change this to your IP range split
+#router_iterator("10.6.102.104", "10.12.204.205") # terminal 2
+#router_iterator("10.12.204.206", "10.19.51.51") # terminal 3
+#router_iterator("10.19.51.52", "10.25.153.153") # terminal 4
+# router_iterator("10.25.153.154", "10.31.255.255") # terminal 5
+#router_iterator("10.31.255.255", "10.38.102.101") # terminal 6
+#router_iterator("10.38.102.102", "10.44.204.203") # terminal 7
+#router_iterator("10.44.204.204", "10.51.51.49") # terminal 8
+#router_iterator("10.51.51.50", "10.57.153.151") # terminal 9
+#router_iterator("10.57.153.152", "10.64.0.1") # terminal 10
 # writeToJSON()
 print(TEMPLATIZEDJSON)
-# pushToMongoDB() # this pushes to mongoDB
+pushToMongoDB() # this pushes to mongoDB
 
 
