@@ -19,7 +19,7 @@ ICMP = socket.getprotobyname('icmp')  # Retrieves the protocol number associated
 UDP = socket.getprotobyname('udp')  # Retrieves the protocol number associated with User Datagram Protocol(UDP)
 IPLIST = []
 TEMPLATIZEDJSON = []
-BACKUP = "last_seen.txt"#TODO: Make a file of this for thie function to run
+BACKUP = "last_seen_terminal2.txt"#TODO: Make a file of this for thie function to run
 OUTPUTFILE = "traceroute_data.json" #TODO: Make a file of this for it to run
 
 
@@ -62,7 +62,7 @@ def traceroute(ipaddress): #start, end, maximum_hops,
         print(f"Tracerouting... {host} ({dest_addr})")
         with open(OUTPUTFILE, 'a') as file:# writes to files
             while True:
-                if ttl == 3: #TODO: Change this to your max hops
+                if ttl == 7: #TODO: Change this to your max hops
                     break
                 udp_sock.setsockopt(socket.SOL_IP, socket.IP_TTL, ttl)
                 udp_sock.sendto(b'', (dest_addr, PORT))
@@ -93,10 +93,10 @@ def traceroute(ipaddress): #start, end, maximum_hops,
                         pass
                     t = round((end_time - start_time) * 1000, 4)
                     place_put = f"{addr[0]}"
-                    print(f"{ttl}: {addr[0]}")
+                    # print(f"{ttl}: {addr[0]}")
                 else:
                     place_put = "No Reply"
-                    print(f"{ttl} *  *  *")
+                    # print(f"{ttl} *  *  *")
                 hopJSON = addHopData(ttl, place_put)
                 connected_list.append(hopJSON)
                 if done:
@@ -106,10 +106,10 @@ def traceroute(ipaddress): #start, end, maximum_hops,
             TEMPLATIZEDJSON.append(object)
             json.dump(object, file, indent = 4)
             pushToMongoDB(object) # TODO: Comment this out if you are not using mongoDB
-        print(f"{host} ({dest_addr} Traceroute completed & Recorded.")
-        with open(BACKUP, "w") as file:
-            file.write(str(host))
-        file.close()
+            with open(BACKUP, "w") as file:
+                file.write(str(host))
+            file.close()
+            print(f"{host} ({dest_addr} Traceroute completed & Recorded.")
     except KeyboardInterrupt:
         print("Traceroute stopped by user.")
     
@@ -137,12 +137,8 @@ def createJSON(ipaddress, attachment_list):
 
 def pushToMongoDB(object):
     dbname = get_database()
-    collection_name = dbname["myles_ipRange1"]
+    collection_name = dbname["myles_ipLists"]
     collection_name.insert_one(object)
-
-def writeToJSON(object):
-    with open("Myles_IPCollect.json", "a") as line:
-        json.dump(object, line, indent=4)
 
 def addHopData(ttl, ip):
     hop_data = {
@@ -152,8 +148,8 @@ def addHopData(ttl, ip):
     return hop_data
 
 
-router_iterator("10.0.0.1", "10.0.0.10") # TODO: change this to your IP range split
-#router_iterator("10.6.102.104", "10.12.204.205") # terminal 2
+#router_iterator("10.2.154.185", "10.2.200.0") # TODO: change this to your IP range split
+router_iterator("10.8.247.48", "10.9.0.0") # terminal 2
 #router_iterator("10.12.204.206", "10.19.51.51") # terminal 3
 #router_iterator("10.19.51.52", "10.25.153.153") # terminal 4
 # router_iterator("10.25.153.154", "10.31.255.255") # terminal 5

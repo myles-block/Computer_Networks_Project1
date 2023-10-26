@@ -2,3 +2,8 @@
 ip_range_calculator.py
 last_seen.txt
 last_seen.txt
+IP Collection/json_fixer.py
+IP Collection/finished_needs_clean.json
+IP Collection/cleaned_output.json
+__pycache__/pymongo_get_database.cpython-310.pyc
+last_seen_terminal2.txt
