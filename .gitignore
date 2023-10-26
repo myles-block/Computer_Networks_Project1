@@ -7,3 +7,5 @@ IP Collection/finished_needs_clean.json
 IP Collection/cleaned_output.json
 __pycache__/pymongo_get_database.cpython-310.pyc
 last_seen_terminal2.txt
+traceroute_data.json
+last_seen.txt
